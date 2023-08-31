@@ -4,7 +4,8 @@
 %let git_username=%nrstr(hbarry1);
 %let git_pw=%nrstr({SAS002}EC9C252C510F886419E4875536D17B7227942F85579DF84B42F04CAE1187D9440E0ABAF329247CC14AEB9A1A48A771B123ADE11D08BBD9E705A88839);
 %let git_branch=%nrstr(test);
-%let tgt_dir=%nrstr(/ifb/warehouse/ifb_lei_solution);
+/* %let tgt_dir=%nrstr(/ifb/warehouse/ifb_lei_solution); */
+%let tgt_dir=%nrstr(/gelcontent/warehouseRepo);
 %let mcr_dir=%nrstr(/gelcontent/myGitClone);
 
 /* Internal macro variables */
@@ -51,20 +52,14 @@ run;
 
 
 /* 
-	Copy ALL files from 
-		&devops_gitdir./artefacts 
-	to 
-		&tgt_dir./artefacts (/ifb/warehouse/ifb_lei_solution/artefacts)
-		
-   	We may optimize this by calling GIT_DIFF_GET before the PULL to record
-	exactly what file have changed since last pull and then only copy those 
-	after the PULL.
+	Copy ALL files from: devops_gitdir./artefacts 
+	to: &tgt_dir./artefacts (/ifb/warehouse/ifb_lei_solution/artefacts)
 */
 
 %include "&mcr_dir./copy_create_delete_macros.sas";
 
 /* delete & build fresh */
-%delete_folder(&tgt_dir./artefacts);
+%delete_folder(&tgt_dir./artefacts,,content_only);
 %create_dir(&tgt_dir./artefacts);
 
 /* loop through git repo & copy over artefacts */
@@ -80,7 +75,6 @@ run;
 
    %do i = 1 %to %sysfunc(dnum(&did));   
    %let name=%qsysfunc(dread(&did,&i));
-		%put &dir/&name;
 		%let tgt_subd=%sysfunc(tranwrd(&dir.,&devops_gitdir.,));
 		%if %qscan(&name,2,.) = %then %do;
 			%put creating DIR: &tgt_dir./&tgt_subd./&name.;
@@ -98,7 +92,9 @@ run;
 %mend list_files;
 %list_files(&devops_gitdir./artefacts);
 
-%let CopyCheck_Result=Failure;
-%let CopyCheck_Result=&CopyFilesPyResult;
-%put NOTE: DevOpsCopySrc.py reports: &CopyCheck_Result;
+/* %delete_folder(&devops_gitdir.); */
+
+/* %let CopyCheck_Result=Failure; */
+/* %let CopyCheck_Result=&CopyFilesPyResult; */
+/* %put NOTE: DevOpsCopySrc.py reports: &CopyCheck_Result; */
 

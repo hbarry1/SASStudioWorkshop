@@ -82,7 +82,7 @@
 %mend delete_file;
 
 
-%macro delete_folder(fpath,localpath);
+%macro delete_folder(fpath,localpath,content_only);
 
     %local rc _path filrf did noe filename fid i;
 	%if %sysfunc(symexist(x_del_n))=0 %then %let x_del_n=0;
@@ -121,11 +121,11 @@
 						%delete_file(&_path.,&filename.);
 			        %end;
 			        %else %do;
-					/* if member object is a folder - call x_delete_folder macro to delete members, then delete the folder */
+					/* if member object is a folder - call delete_folder macro to delete members, then delete the folder */
 			            %if %quote(&localpath) = %then
-			                %x_delete_folder(&fpath, &filename);
+			                %delete_folder(&fpath, &filename);
 			            %else 
-			                %x_delete_folder(&fpath, &localpath/&filename);
+			                %delete_folder(&fpath, &localpath/&filename);
 						%delete_file(&_path.,&filename.);
 			        %end;
 
@@ -136,7 +136,9 @@
 			%end;
 
 			/** delete the folder **/
-			%delete_file(&_path.);
+			%if &content_only. eq or &content_only.=N %then %do;
+				%delete_file(&_path.);
+			%end;
 
 		%end; /* if rc = 0 */
 

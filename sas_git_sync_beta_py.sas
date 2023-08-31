@@ -1,8 +1,7 @@
 /* Git Setup */
 %let git_url=%nrstr(https://github.com/hbarry1/hb_test.git);
-%let git_user=%nrstr(heather@barrytech.co.uk);
-%let git_username=%nrstr(hbarry1);
-%let git_pw=%nrstr({SAS002}EC9C252C510F886419E4875536D17B7227942F85579DF84B42F04CAE1187D9440E0ABAF329247CC14AEB9A1A48A771B123ADE11D08BBD9E705A88839);
+%let git_user=%nrstr(hbarry1);
+%let git_pwd=%nrstr({SAS002}EC9C252C510F886419E4875536D17B7227942F85579DF84B42F04CAE1187D9440E0ABAF329247CC14AEB9A1A48A771B123ADE11D08BBD9E705A88839);
 %let git_branch=%nrstr(test);
 /* %let tgt_dir=%nrstr(/ifb/warehouse/ifb_lei_solution); */
 %let tgt_dir=%nrstr(/gelcontent/warehouseRepo);
@@ -34,7 +33,7 @@ data _null_;
 		"&git_url", 
 		"&devops_gitdir", 
 		"&git_user", 
-		"&git_pw");          
+		"&git_pwd");          
     call symput('git_rc',strip(put(rc,best32.)));
 run;
 %returnCodeCheck(&git_rc,0);

@@ -1,3 +1,4 @@
+/* Creates any missing directories in a given file path string */
 %macro create_dir(dir);
    %local lastchar child parent;
 
@@ -41,6 +42,7 @@
 
 %mend create_dir;
 
+/* Bit-wise copy of given file from source to target directories */
 %macro copy_file(src_path,tgt_path,fname);
 
 	%if %sysfunc(fileexist(&tgt_path.))=0 %then %do;
@@ -71,6 +73,7 @@
 
 %mend copy_file;
 
+/* Deletes an individual file at specified location */
 %macro delete_file(tgt_path,fname);
 
 	%put DELETING &tgt_path./&fname.;
@@ -81,7 +84,7 @@
 
 %mend delete_file;
 
-
+/* Recursively deletes all child objects/ folders in a given directory */
 %macro delete_folder(fpath,localpath,content_only);
 
     %local rc _path filrf did noe filename fid i;
